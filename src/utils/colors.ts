@@ -1,0 +1,14 @@
+export const COLORS = {
+  BLACK: 0x0B0B0B,
+  DARK_BG: 0x111111,
+  PANEL: 0x1A1A1A,
+
+  GOLD: 0xD4AF37,
+
+  SUCCESS: 0x2ECC71,
+  WARNING: 0xF1C40F,
+  DANGER: 0xE74C3C,
+  INFO: 0x3498DB,
+
+  TEXT: 0xF5F5F5
+} as const;

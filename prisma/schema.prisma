@@ -1,0 +1,374 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model GuildConfig {
+  id              String   @id @default(cuid())
+
+  guildId         String   @unique
+
+  embedColor      String   @default("#D4AF37")
+
+  logChannelId    String?
+
+  antiRaidEnabled Boolean  @default(true)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  raidThreshold      Int      @default(5)
+  raidWindowSeconds  Int      @default(10)
+
+  raidAlertChannelId String?
+  quarantineRoleId   String?
+}
+
+model Panel {
+  id         String   @id @default(cuid())
+
+  guildId    String
+
+  channelId  String
+
+  messageId  String
+
+  type       String
+
+  createdAt  DateTime @default(now())
+}
+
+model NotificationRole {
+  id         String   @id @default(cuid())
+
+  guildId    String
+
+  roleId     String
+
+  label      String
+
+  emoji      String?
+
+  createdAt  DateTime @default(now())
+}
+
+model Alliance {
+  id          String   @id @default(cuid())
+
+  guildId     String
+
+  name        String
+
+  status      String
+
+  description String?
+
+  createdAt   DateTime @default(now())
+}
+
+model KOS {
+  id         String   @id @default(cuid())
+
+  guildId    String
+
+  target     String
+
+  reason     String
+
+  addedBy    String
+
+  createdAt  DateTime @default(now())
+}
+
+model Punishment {
+  id          String   @id @default(cuid())
+
+  guildId     String
+
+  userId      String
+
+  moderatorId String
+
+  type        String
+
+  reason      String
+
+  createdAt   DateTime @default(now())
+}
+
+model PlayerStat {
+  id            String   @id @default(cuid())
+
+  guildId       String
+
+  playerName    String
+
+  totalPlaytime Int      @default(0)
+
+  dailyPlaytime Int      @default(0)
+
+  createdAt     DateTime @default(now())
+
+  updatedAt     DateTime @updatedAt
+}
+
+model PavlovServer {
+  id              String   @id @default(cuid())
+
+  guildId         String
+
+  name            String
+
+  serverIp        String
+  serverPort      Int
+
+  rconPort        Int
+  rconPassword    String
+
+  enabled         Boolean  @default(true)
+
+  createdAt       DateTime @default(now())
+}
+
+model ServerStatus {
+  id          String   @id @default(cuid())
+
+  guildId     String
+  serverId    String
+
+  online      Boolean  @default(false)
+  playerCount Int      @default(0)
+  maxPlayers  Int      @default(0)
+
+  map         String?
+  gameMode    String?
+
+  updatedAt   DateTime @updatedAt
+
+  @@unique([guildId, serverId])
+}
+
+model Rule {
+  id        String   @id @default(cuid())
+
+  guildId   String
+
+  number    Int
+  category  String   @default("General")
+  title     String
+  content   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DefconStatus {
+  id          String   @id @default(cuid())
+
+  guildId     String   @unique
+
+  level       Int
+  title       String
+  description String
+
+  expiresAt   DateTime?
+
+  updatedAt   DateTime @updatedAt
+}
+
+model CodeStatus {
+  id          String   @id @default(cuid())
+
+  guildId     String   @unique
+
+  code        String
+  title       String
+  description String
+
+  expiresAt   DateTime?
+
+  updatedAt   DateTime @updatedAt
+}
+
+model TimedState {
+  id          String   @id @default(cuid())
+
+  guildId     String
+
+  system      String
+
+  previous    String
+
+  active      String
+
+  expiresAt   DateTime
+
+  createdAt   DateTime @default(now())
+}
+
+model TrainerConfig {
+  id                String   @id @default(cuid())
+
+  guildId           String   @unique
+
+  requestChannelId  String
+  trainerRoleId     String
+
+  createdAt         DateTime @default(now())
+}
+
+model TrainerRequest {
+  id           String   @id @default(cuid())
+
+  guildId      String
+
+  userId       String
+  username     String
+
+  branch       String
+  trainingType String
+
+  notes        String?
+
+  status       String   @default("OPEN")
+
+  trainerId    String?
+  trainerName  String?
+
+  messageId    String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  expiresAt DateTime?
+}
+
+model TrainerRole {
+  id        String   @id @default(cuid())
+
+  guildId   String
+
+  branch    String
+
+  roleId    String
+
+  createdAt DateTime @default(now())
+
+  @@unique([guildId, branch])
+}
+
+model TrainerStatus {
+  id        String   @id @default(cuid())
+
+  guildId   String
+
+  userId    String   @unique
+  username  String
+
+  onDuty    Boolean  @default(false)
+
+  activeSession Boolean @default(false)
+
+  branch    String?
+
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model TrainingSession {
+  id            String   @id @default(cuid())
+
+  guildId       String
+
+  trainerId     String
+  trainerName   String
+
+  branch        String
+
+  status        String   @default("WAITING")
+  // WAITING
+  // ACTIVE
+  // CERTIFICATION
+  // COMPLETED
+
+  messageId     String?
+
+  startedAt     DateTime?
+  endedAt       DateTime?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  trainees      SessionTrainee[]
+}
+
+model SessionTrainee {
+  id            String   @id @default(cuid())
+
+  sessionId     String
+
+  userId        String
+  username      String
+
+  status        String @default("PENDING")
+  // PENDING
+  // CERTIFIED
+  // FAILED
+  // NO_SHOW
+
+  joinedAt      DateTime @default(now())
+
+  session TrainingSession @relation(fields: [sessionId], references: [id])
+
+  createdAt     DateTime @default(now())
+}
+
+model Certification {
+  id            String   @id @default(cuid())
+
+  guildId       String
+
+  userId        String
+  username      String
+
+  branch        String
+
+  trainerId     String
+  trainerName   String
+
+  sessionId     String
+
+  result        String
+  // CERTIFIED
+  // FAILED
+  // NO_SHOW
+
+  certifiedAt   DateTime @default(now())
+}
+
+model CertificationRole {
+  id        String   @id @default(cuid())
+
+  guildId   String
+
+  branch    String
+
+  roleId    String
+
+  createdAt DateTime @default(now())
+
+  @@unique([guildId, branch])
+}
+
+model TrainingLogConfig {
+  id          String   @id @default(cuid())
+
+  guildId     String   @unique
+
+  channelId   String
+
+  createdAt   DateTime @default(now())
+}

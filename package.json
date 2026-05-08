@@ -1,0 +1,37 @@
+{
+	"name": "ocs-bot",
+	"version": "1.0.0",
+	"description": "Operation Cheddar Shield Discord Management Platform",
+	"main": "dist/main.js",
+	"scripts": {
+		"dev": "nodemon --exec ts-node src/main.ts",
+		"build": "tsc",
+		"start": "node dist/main.js",
+		"deploy": "ts-node src/scripts/deployCommands.ts"
+	},
+	"keywords": [
+		"discord",
+		"pavlov",
+		"ocs",
+		"military",
+		"bot"
+	],
+	"author": "BDubz420",
+	"license": "MIT",
+	"dependencies": {
+		"@prisma/client": "^6.8.2",
+		"chokidar": "^5.0.0",
+		"dgram": "^1.0.1",
+		"discord.js": "^14.26.4",
+		"dotenv": "^17.4.2",
+		"node-cron": "^4.2.1",
+		"prisma": "^6.8.2",
+		"winston": "^3.19.0"
+	},
+	"devDependencies": {
+		"@types/node": "^25.6.1",
+		"nodemon": "^3.1.14",
+		"ts-node": "^10.9.2",
+		"typescript": "^6.0.3"
+	}
+}
